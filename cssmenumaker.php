@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: MenuMaker
+ * Plugin Name: MenuMaker2
  * Plugin URI: http://cssmenumaker.com/
  * Description: Wordpress Plugin to build dynamic, responsive, multi level menu navigations.
  * Version: 1.1.3
