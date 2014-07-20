@@ -30,7 +30,7 @@ function previewMenu(builder)
     var menu_class = '';
   }  
   builder.currentSettings['menuClass'] = "#cssmenu-" + builder.postId;
-  builder.currentSettings['includePath'] = cssmenu_global.root_url + "/wp-content/plugins/cssmenumaker/menus/" + builder.themeId + "/images/";            
+  builder.currentSettings['includePath'] = cssmenu_global.root_url + "/wp-content/plugins/cssmenumaker_pro/menus/" + builder.themeId + "/images/";            
   
 	var renderedCSS = builder.renderCSS();
  	parser.parse(renderedCSS, function (err, tree) {
@@ -417,7 +417,7 @@ $(document).ready(function()
       } else {      
         var url = cssmenu_global.root_url + "/wp-admin/admin-ajax.php?action=get_menu_json&theme_id=" + theme_id
       	$.getJSON(url, function(data) {
-          var img = "<img src='" + cssmenu_global.root_url + "/wp-content/plugins/cssmenumaker/menus/" + data.thumbnail + "' />";
+          var img = "<img src='" + cssmenu_global.root_url + "/wp-content/plugins/cssmenumaker_pro/menus/" + data.thumbnail + "' />";
           $(".theme-trigger span").html(img);
       	});
         $(".theme-trigger").show();

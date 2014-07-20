@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name: MenuMaker2
+ * Plugin Name: MenuMaker Pro
  * Plugin URI: http://cssmenumaker.com/
  * Description: Wordpress Plugin to build dynamic, responsive, multi level menu navigations.
  * Version: 1.1.3
@@ -10,8 +10,8 @@
  */
 
 /* Include Files */
-add_action('plugins_loaded', 'cssmenumaker_menu_load');
-function cssmenumaker_menu_load()
+add_action('plugins_loaded', 'cssmenumaker_pro_menu_load');
+function cssmenumaker_pro_menu_load()
 {  
   require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'cssmenumaker_post_type.php');  
   require_once(dirname(__FILE__) . DIRECTORY_SEPARATOR . 'cssmenumaker_widget.php');
@@ -22,33 +22,41 @@ function cssmenumaker_menu_load()
 /* 
  * Ajax callback for Dynamic CSS and jQuery 
  */
-add_action('wp_ajax_dynamic_css', 'dynaminc_css');
-add_action('wp_ajax_nopriv_dynamic_css', 'dynaminc_css');
-function dynaminc_css() {
+add_action('wp_ajax_pro_dynamic_css', 'pro_dynamic_css');
+add_action('wp_ajax_nopriv_pro_dynamic_css', 'pro_dynamic_css');
+function pro_dynamic_css() {
   require(dirname(__FILE__).DIRECTORY_SEPARATOR.'css/dynamic.css.php');
   exit;
 }  
-add_action('wp_ajax_dynamic_script', 'dynamic_script');
-add_action('wp_ajax_nopriv_dynamic_script', 'dynamic_script');
-function dynamic_script() {
+add_action('wp_ajax_pro_dynamic_script', 'pro_dynamic_script');
+add_action('wp_ajax_nopriv_pro_dynamic_script', 'pro_dynamic_script');
+function pro_dynamic_script() {
   require(dirname(__FILE__).DIRECTORY_SEPARATOR.'scripts/dynamic.js.php');
   exit;
 }
-add_action('wp_ajax_get_menu_json', 'ajax_get_menu_json');
-add_action('wp_ajax_nopriv_get_menu_json', 'ajax_get_menu_json');
-function ajax_get_menu_json() {
+add_action('wp_ajax_get_menu_json', 'pro_ajax_get_menu_json');
+add_action('wp_ajax_nopriv_get_menu_json', 'pro_ajax_get_menu_json');
+function pro_ajax_get_menu_json() {
   $theme_id = $_GET['theme_id'];
   print file_get_contents(dirname(__FILE__).DIRECTORY_SEPARATOR."menus/{$theme_id}/menu.json");
   die();
 }  
+
+// Base CSS Styles
+add_action('wp_enqueue_scripts', 'cssmenumaker_pro_base_styles');
+function cssmenumaker_pro_base_styles() {
+  wp_register_style( 'cssmenumaker-base-styles', plugins_url().'/cssmenumaker_pro/css/menu_styles.css', array(), '', 'all' );
+  wp_enqueue_style( 'cssmenumaker-base-styles');
+}
+
 
 
 /* 
  * This filter modifies the HTML output of our menus before printing to the screen
  * 
  */
-add_filter('wp_nav_menu_args', 'cssmenumaker_modify_nav_menu_args', 5000);
-function cssmenumaker_modify_nav_menu_args($args)
+add_filter('wp_nav_menu_args', 'cssmenumaker_pro_modify_nav_menu_args', 5000);
+function cssmenumaker_pro_modify_nav_menu_args($args)
 {
   /* Pass cssmenumaker_flag & cssmenumaker_id to the wp_nav_menu() and this filter kicks in */
   if(isset($args['cssmenumaker_flag']) && isset($args['cssmenumaker_id'])) {
@@ -67,12 +75,12 @@ function cssmenumaker_modify_nav_menu_args($args)
     $args['menu_id'] = '';
     $args['items_wrap'] = '<ul id="%1$s" class="%2$s">%3$s</ul>';
     $args['depth'] = $menu_settings->depth;       
-    $args['walker'] = new CSS_Menu_Maker_Walker();
+    $args['walker'] = new CSS_Menu_Maker_Pro_Walker();
     
   } 
 
   /* We are changing Args for a menu displayed in a theme location */
-  $available_menus = get_posts(array("post_type" => "cssmenu"));    
+  $available_menus = get_posts(array("post_type" => "cssmenupro"));    
   foreach($available_menus as $id => $available_menu) {
     $cssmenu_location = get_post_meta( $available_menu->ID, 'cssmenu_location', true );
     $cssmenu_structure = get_post_meta( $available_menu->ID, 'cssmenu_structure', true );    
@@ -91,12 +99,12 @@ function cssmenumaker_modify_nav_menu_args($args)
       $args['menu_id'] = '';
       $args['items_wrap'] = '<ul id="%1$s" class="%2$s">%3$s</ul>';
       $args['depth'] = $menu_settings->depth;            
-      $args['walker'] = new CSS_Menu_Maker_Walker();
-
-      wp_enqueue_style( 'cssmenumaker-base-styles', plugins_url().'/cssmenumaker/css/menu_styles.css');
-      wp_enqueue_style("dynamic-css-{$available_menu->ID}", admin_url('admin-ajax.php')."?action=dynamic_css&selected={$available_menu->ID}");
+      $args['walker'] = new CSS_Menu_Maker_Pro_Walker();
+      
+      wp_register_style("dynamic-css-{$available_menu->ID}", admin_url('admin-ajax.php')."?action=pro_dynamic_css&selected={$available_menu->ID}", array(), '', 'all');
+      wp_enqueue_style("dynamic-css-{$available_menu->ID}");
       if($menu_js) {
-        wp_enqueue_script("dynamic-script-{$available_menu->ID}", admin_url('admin-ajax.php')."?action=dynamic_script&selected={$available_menu->ID}");    
+        wp_enqueue_script("dynamic-script-{$available_menu->ID}", admin_url('admin-ajax.php')."?action=pro_dynamic_script&selected={$available_menu->ID}");    
       }            
   	}
   }
@@ -110,11 +118,11 @@ function cssmenumaker_modify_nav_menu_args($args)
  * $menu_id  = the post ID
  */
 
-function cssmenumaker_print_menu($menu_id = 0)
+function cssmenumaker_pro_print_menu($menu_id = 0)
 {
   /* Did we get a valid menu ID? */
   $post = get_post(intval($menu_id));
-  if(!$post || $post->post_type != 'cssmenu') {
+  if(!$post || $post->post_type != 'cssmenupro') {
     print "The ID you provided is not a valid MenuMaker menu.";
     return;
   }
@@ -125,14 +133,15 @@ function cssmenumaker_print_menu($menu_id = 0)
     'cssmenumaker_id' => $menu_id
   ));
 
+
   $menu_css = get_post_meta($menu_id, "cssmenu_css", true);
   $menu_js = get_post_meta($menu_id, "cssmenu_js", true);    
   if($menu_css) {
-    wp_enqueue_style('cssmenumaker-base-styles', plugins_url().'/cssmenumaker/css/menu_styles.css');
-    wp_enqueue_style("dynamic-css-{$menu_id}", admin_url('admin-ajax.php')."?action=dynamic_css&selected={$menu_id}");      
+    wp_enqueue_style('cssmenumaker-base-styles', plugins_url().'/cssmenumaker_pro/css/menu_styles.css');
+    wp_enqueue_style("dynamic-css-{$menu_id}", admin_url('admin-ajax.php')."?action=pro_dynamic_css&selected={$menu_id}");      
   }
   if($menu_js) {
-    wp_enqueue_script("dynamic-script-{$menu_id}", admin_url('admin-ajax.php')."?action=dynamic_script&selected={$menu_id}");    
+    wp_enqueue_script("dynamic-script-{$menu_id}", admin_url('admin-ajax.php')."?action=pro_dynamic_script&selected={$menu_id}");    
   }    
 
 }
@@ -143,14 +152,14 @@ function cssmenumaker_print_menu($menu_id = 0)
  * Shortcodes
  */
 
-add_shortcode('cssmenumaker', 'cssmenumaker_shortcode');
-function cssmenumaker_shortcode($atts) 
+add_shortcode('cssmenumakerpro', 'cssmenumaker_pro_shortcode');
+function cssmenumaker_pro_shortcode($atts) 
 {
   extract(shortcode_atts(array('id' => 0), $atts));  
-  return cssmenumaker_print_menu($atts['id']);
+  return cssmenumaker_pro_print_menu($atts['id']);
 }
-add_filter('manage_edit-cssmenu_columns', 'cssmenumaker_edit_columns') ;
-function cssmenumaker_edit_columns($columns) 
+add_filter('manage_edit-cssmenupro_columns', 'cssmenumaker_pro_edit_columns') ;
+function cssmenumaker_pro_edit_columns($columns) 
 {
 	$columns = array(
 		'cb' => '<input type="checkbox" />',
@@ -160,35 +169,18 @@ function cssmenumaker_edit_columns($columns)
 	);
 	return $columns;
 }
-add_action('manage_cssmenu_posts_custom_column', 'cssmenumenumaker_manage_columns', 10, 2);
-function cssmenumenumaker_manage_columns($column, $post_id) 
+add_action('manage_cssmenupro_posts_custom_column', 'cssmenumaker_pro_manage_columns', 10, 2);
+function cssmenumaker_pro_manage_columns($column, $post_id) 
 {
 	global $post;
 	switch( $column ) {
 		case 'shortcode' :
-				print '[cssmenumaker id="'.$post_id.'"]';
+				print '[cssmenumakerpro id="'.$post_id.'"]';
 			break;
 		default :
 			break;
 	}
 }
-
-
-/* 
- * Admin Messages
- */
-/*
-add_action('admin_notices', 'beta_notice' );
-function beta_notice() {
-  $screen = get_current_screen();
-  if($screen->id == 'edit-cssmenu') {
-    print "<div class='error'>";
-    print "<h3>Beta Testing</h3>";
-    print "<p>This plugin is currently in beta testing. Please take the time to <a style='text-decoration: underline;' href='http://cssmenumaker.com/wordpress-plugin-support'>let us know</a> if you run into any issues or have any questions.</p>";
-    print "</div>";    
-  }
-}
-*/
 
 
 

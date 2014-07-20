@@ -1,13 +1,13 @@
 <?php
   
 
-add_action( 'widgets_init', 'cssmenumaker_create_widgets' );  
-function cssmenumaker_create_widgets() {
-  register_widget('CSS_MenuMaker');
+add_action( 'widgets_init', 'cssmenumaker_pro_create_widgets' );  
+function cssmenumaker_pro_create_widgets() {
+  register_widget('CSS_MenuMaker_Pro');
 }  
 
 
-class CSS_MenuMaker extends WP_Widget {
+class CSS_MenuMaker_Pro extends WP_Widget {
   // Construction function
   function __construct ()  {  
     parent::__construct( 'cssmenu_widget', 'MenuMaker', array( 'description' => 'Display a Menu built with MenuMaker' ));            
@@ -30,7 +30,7 @@ class CSS_MenuMaker extends WP_Widget {
   
   function widget($args, $instance) 
   {
-    cssmenumaker_print_menu($instance['selected_menu']);      
+    cssmenumaker_pro_print_menu($instance['selected_menu']);      
   }  
 }
 

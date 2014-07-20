@@ -1,11 +1,11 @@
 <?php
 
-add_action( "init", "cssmenumaker_create_menu_post_type");
-function cssmenumaker_create_menu_post_type() 
+add_action( "init", "cssmenumaker_pro_create_menu_post_type");
+function cssmenumaker_pro_create_menu_post_type() 
 {
   $labels = array(
-    'name'               => 'MenuMaker',
-    'singular_name'      => 'MenuMaker',
+    'name'               => 'MenuMaker Pro',
+    'singular_name'      => 'MenuMaker Pro',
     'add_new'            => 'Add New',
     'add_new_item'       => 'Add New Menu',
     'edit_item'          => 'Edit Menu',
@@ -16,7 +16,7 @@ function cssmenumaker_create_menu_post_type()
     'not_found'          => 'No menus found',
     'not_found_in_trash' => 'No menus found in Trash',
     'parent_item_colon'  => '',
-    'menu_name'          => 'MenuMaker'
+    'menu_name'          => 'MenuMaker Pro'
   );
   $args = array(
     'labels'             => $labels,
@@ -25,7 +25,7 @@ function cssmenumaker_create_menu_post_type()
     'show_ui'            => true,
     'show_in_menu'       => true,
     'query_var'          => true,
-    'rewrite'            => array('slug' => 'cssmenu'),
+    'rewrite'            => array('slug' => 'cssmenupro'),
     'capability_type'    => 'post',
     'has_archive'        => true,
     'hierarchical'       => false,
@@ -33,39 +33,36 @@ function cssmenumaker_create_menu_post_type()
     'supports'           => array( 'title')
   );
 
-  register_post_type('cssmenu', $args);
+  register_post_type('cssmenupro', $args);
 }
 
 
-add_action('admin_init', 'cssmenumaker_admin_init');
-function cssmenumaker_admin_init()
+add_action('admin_init', 'cssmenumaker_pro_admin_init');
+function cssmenumaker_pro_admin_init()
 {  
-  wp_enqueue_script("cssmenu-builder-structure", plugins_url().'/cssmenumaker/scripts/structure.js');    
-  wp_enqueue_script("cssmenu-builder", plugins_url().'/cssmenumaker/scripts/builder.js');
-  wp_enqueue_script("cssmenu-builder-less", plugins_url().'/cssmenumaker/scripts/less.js');
-  wp_enqueue_script("cssmenu-builder-spectrum", plugins_url().'/cssmenumaker/scripts/spectrum/spectrum.js'); 
-  wp_enqueue_script("cssmenu-builder-magnific", plugins_url().'/cssmenumaker/scripts/magnific/jquery.magnific-popup.min.js'); 
+  wp_enqueue_script("cssmenu-builder-structure", plugins_url().'/cssmenumaker_pro/scripts/structure.js');    
+  wp_enqueue_script("cssmenu-builder", plugins_url().'/cssmenumaker_pro/scripts/builder.js');
+  wp_enqueue_script("cssmenu-builder-less", plugins_url().'/cssmenumaker_pro/scripts/less.js');
+  wp_enqueue_script("cssmenu-builder-spectrum", plugins_url().'/cssmenumaker_pro/scripts/spectrum/spectrum.js'); 
+  wp_enqueue_script("cssmenu-builder-magnific", plugins_url().'/cssmenumaker_pro/scripts/magnific/jquery.magnific-popup.min.js'); 
 
   $data_array = array( 'plugin_url' => plugins_url(), 'root_url' => get_site_url());
   wp_localize_script( 'cssmenu-builder-structure', 'cssmenu_global', $data_array);
 
-  wp_enqueue_style('cssmenumaker-base-styles', plugins_url().'/cssmenumaker/css/menu_styles.css');  
-  wp_enqueue_style('cssmenumaker-spectrum', plugins_url().'/cssmenumaker/scripts/spectrum/spectrum.css');    
-  wp_enqueue_style('cssmenumaker-builder-styles', plugins_url().'/cssmenumaker/css/styles.css');   
-  wp_enqueue_style('cssmenumaker-magnific-css', plugins_url().'/cssmenumaker/scripts/magnific/magnific-popup.css');     
+  wp_enqueue_style('cssmenumaker-base-styles', plugins_url().'/cssmenumaker_pro/css/menu_styles.css');  
+  wp_enqueue_style('cssmenumaker-spectrum', plugins_url().'/cssmenumaker_pro/scripts/spectrum/spectrum.css');    
+  wp_enqueue_style('cssmenumaker-builder-styles', plugins_url().'/cssmenumaker_pro/css/styles.css');   
+  wp_enqueue_style('cssmenumaker-magnific-css', plugins_url().'/cssmenumaker_pro/scripts/magnific/magnific-popup.css');     
   
-  add_meta_box('cssmenumaker_menu_options', 'Menu Options','cssmenumaker_admin_menu_options','cssmenu', 'normal', 'high' );
-  add_meta_box('cssmenumaker_preview', 'Preview', 'cssmenumaker_admin_menu_preview', 'cssmenu', 'normal' );
-  add_meta_box('cssmenumaker_menu_database', 'Menu Database Saves','cssmenumaker_admin_menu_database','cssmenu', 'normal');   
-  
-  
-  add_option('cssmenumaker_premium_access', 0);
+  add_meta_box('cssmenumaker_menu_options', 'Menu Options','cssmenumaker_pro_admin_menu_options','cssmenupro', 'normal', 'high' );
+  add_meta_box('cssmenumaker_preview', 'Preview', 'cssmenumaker_pro_admin_menu_preview', 'cssmenupro', 'normal' );
+  add_meta_box('cssmenumaker_menu_database', 'Menu Database Saves','cssmenumaker_pro_admin_menu_database','cssmenupro', 'normal');
 }
 
 
 
 
-function cssmenumaker_admin_menu_preview($cssmenu)
+function cssmenumaker_pro_admin_menu_preview($cssmenu)
 {
   $cssmenu_structure = get_post_meta( $cssmenu->ID, 'cssmenu_structure', true );  
   $theme_id = esc_html( get_post_meta( $cssmenu->ID, 'cssmenu_theme_id', true));  
@@ -80,7 +77,7 @@ function cssmenumaker_admin_menu_preview($cssmenu)
 
 
 /* Display Menu Options */
-function cssmenumaker_admin_menu_options($cssmenu) 
+function cssmenumaker_pro_admin_menu_options($cssmenu) 
 {    
   global $starter_themes;
   $cssmenu_structure = esc_html( get_post_meta( $cssmenu->ID, 'cssmenu_structure', true));
@@ -142,7 +139,7 @@ function cssmenumaker_admin_menu_options($cssmenu)
   print "<div class='panel php'>";
   print '<h4>PHP</h4>';
   print "<p class='help'>Use PHP to display your menu in a theme file.</p>";  
-  print "<p><input type='text' value='<?php print cssmenumaker_print_menu(".$cssmenu->ID."); ?>' /></p>";  
+  print "<p><input type='text' value='<?php print cssmenumaker_pro_print_menu(".$cssmenu->ID."); ?>' /></p>";  
   print "</div><!-- .panel -->";
   print "</div><!-- #menu-options -->";
   
@@ -175,7 +172,7 @@ function cssmenumaker_admin_menu_options($cssmenu)
   print '<a href="#theme-select-overlay" id="theme-select-trigger" class="theme-trigger clearfix"><span>';
   foreach($themeMenus as $theme) {
     if($theme->id == $cssmenu_theme_id) {
-      print "<img src='".plugins_url()."/cssmenumaker/menus/".$theme->thumbpath."' />";
+      print "<img src='".plugins_url()."/cssmenumaker_pro/menus/".$theme->thumbpath."' />";
     }
   }
   print '</span><div class="cssmenu-arrow"></div></a>';
@@ -226,7 +223,7 @@ function cssmenumaker_admin_menu_options($cssmenu)
     foreach($menu->terms as $term) {
       $classes .= "{$term} ";
     }    
-    $li_output .= "<li class='{$classes}'><a href='#' {$data}><div class='banner'></div><img src='".plugins_url()."/cssmenumaker/menus/".$menu->thumbpath."' /></a></li>";  
+    $li_output .= "<li class='{$classes}'><a href='#' {$data}><div class='banner'></div><img src='".plugins_url()."/cssmenumaker_pro/menus/".$menu->thumbpath."' /></a></li>";  
 
   }
   print $li_output;
@@ -236,7 +233,7 @@ function cssmenumaker_admin_menu_options($cssmenu)
 }
 
 /* Display Menu CSS */
-function cssmenumaker_admin_menu_database($cssmenu) 
+function cssmenumaker_pro_admin_menu_database($cssmenu) 
 {  
   $cssmenu_css = esc_html(get_post_meta( $cssmenu->ID, 'cssmenu_css', true ) );
   $cssmenu_js = esc_html(get_post_meta( $cssmenu->ID, 'cssmenu_js', true ) );
@@ -263,10 +260,10 @@ function cssmenumaker_admin_menu_database($cssmenu)
 
 
 /* Save Menu Options */
-add_action('save_post','cssmenumaker_post_save', 10, 2 );
-function cssmenumaker_post_save($cssmenu_id, $cssmenu ) 
+add_action('save_post','cssmenumaker_pro_post_save', 10, 2 );
+function cssmenumaker_pro_post_save($cssmenu_id, $cssmenu ) 
 {
-  if ( $cssmenu->post_type == 'cssmenu' ) {    
+  if ( $cssmenu->post_type == 'cssmenupro' ) {    
 
     if (isset( $_POST['cssmenu_structure'] ) && $_POST['cssmenu_structure'] != '' ) {
       update_post_meta($cssmenu_id, 'cssmenu_structure', $_POST['cssmenu_structure'] );
@@ -300,10 +297,10 @@ function cssmenumaker_post_save($cssmenu_id, $cssmenu )
 
 
 
-add_filter( 'template_include','cssmenumaker_template_include', 1 );
-function cssmenumaker_template_include ($template_path) 
+add_filter( 'template_include','cssmenumaker_pro_template_include', 1 );
+function cssmenumaker_pro_template_include ($template_path) 
 {
-  if (get_post_type() == 'cssmenu') {
+  if (get_post_type() == 'cssmenupro') {
     if (is_single()) {
       // checks if the file exists in the theme first,
       // otherwise serve the file from the plugin
@@ -323,14 +320,14 @@ function cssmenumaker_template_include ($template_path)
 /* 
  * Help Page
  */
-add_action('admin_menu', 'cssmenumake_menu_help');
-function cssmenumake_menu_help()  {
-	add_submenu_page('edit.php?post_type=cssmenu', 
+add_action('admin_menu', 'cssmenumaker_pro_menu_help');
+function cssmenumaker_pro_menu_help()  {
+	add_submenu_page('edit.php?post_type=cssmenupro', 
                     'CSS MenuMaker Help', 
                     'Help', 'manage_options', 'cssmenu-help', 
-                    'cssmenumaker_help_page');
+                    'cssmenumaker_pro_help_page');
 }
-function cssmenumaker_help_page()  {
+function cssmenumaker_pro_help_page()  {
   require(dirname(__FILE__).DIRECTORY_SEPARATOR.'help.inc');
 }
 
