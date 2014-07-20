@@ -9,6 +9,12 @@
  * License: GPL2
  */
 
+
+define("TM", 1);
+global $starter_themes;
+$starter_themes = array(314,249,301);
+
+
 /* Include Files */
 add_action('plugins_loaded', 'cssmenumaker_menu_load');
 function cssmenumaker_menu_load()
