@@ -1,9 +1,9 @@
 rm ~/Desktop/cssmenumaker.zip
 cd ..
-cp -R cssmenumaker ~/Desktop
-cd ~/Desktop/cssmenumaker
+cp -R cssmenumaker_pro ~/Desktop
+cd ~/Desktop/cssmenumaker_pro
 rm -rf .git
 rm build
 cd ..
-zip -r cssmenumaker cssmenumaker
-rm -rf cssmenumaker
+zip -r cssmenumaker_pro cssmenumaker_pro
+rm -rf cssmenumaker_pro
