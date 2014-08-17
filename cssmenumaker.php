@@ -99,17 +99,29 @@ function cssmenumaker_pro_modify_nav_menu_args($args)
       $args['menu_id'] = '';
       $args['items_wrap'] = '<ul id="%1$s" class="%2$s">%3$s</ul>';
       $args['depth'] = $menu_settings->depth;            
-      $args['walker'] = new CSS_Menu_Maker_Pro_Walker();
-      
-      wp_register_style("dynamic-css-{$available_menu->ID}", admin_url('admin-ajax.php')."?action=pro_dynamic_css&selected={$available_menu->ID}", array(), '', 'all');
-      wp_enqueue_style("dynamic-css-{$available_menu->ID}");
-      if($menu_js) {
-        wp_enqueue_script("dynamic-script-{$available_menu->ID}", admin_url('admin-ajax.php')."?action=pro_dynamic_script&selected={$available_menu->ID}");    
-      }            
+      $args['walker'] = new CSS_Menu_Maker_Pro_Walker();      
   	}
   }
 
 	return $args;
+}
+
+
+/*  
+ * Add all Menu's CSS/jQuery to the header 
+ */
+add_action('wp_enqueue_scripts', 'menu_css_style');
+function menu_css_style($id) 
+{
+  $available_menus = get_posts(array("post_type" => "cssmenupro", 'post_status' => 'publish'));  
+  foreach($available_menus as $id => $current_menu) {
+    wp_register_style("dynamic-css-{$current_menu->ID}", admin_url('admin-ajax.php')."?action=pro_dynamic_css&selected={$current_menu->ID}", array(), '', 'all');
+    wp_enqueue_style("dynamic-css-{$current_menu->ID}");
+    $menu_js = get_post_meta($current_menu->ID, "cssmenu_js", true);
+    if($menu_js) {
+      wp_enqueue_script("dynamic-script-{$current_menu->ID}", admin_url('admin-ajax.php')."?action=pro_dynamic_script&selected={$current_menu->ID}", array( 'jquery' ));    
+    }
+  }
 }
 
 
@@ -132,18 +144,6 @@ function cssmenumaker_pro_print_menu($menu_id = 0)
     'cssmenumaker_flag' => true,
     'cssmenumaker_id' => $menu_id
   ));
-
-
-  $menu_css = get_post_meta($menu_id, "cssmenu_css", true);
-  $menu_js = get_post_meta($menu_id, "cssmenu_js", true);    
-  if($menu_css) {
-    wp_enqueue_style('cssmenumaker-base-styles', plugins_url().'/cssmenumaker_pro/css/menu_styles.css');
-    wp_enqueue_style("dynamic-css-{$menu_id}", admin_url('admin-ajax.php')."?action=pro_dynamic_css&selected={$menu_id}");      
-  }
-  if($menu_js) {
-    wp_enqueue_script("dynamic-script-{$menu_id}", admin_url('admin-ajax.php')."?action=pro_dynamic_script&selected={$menu_id}");    
-  }    
-
 }
 
 
