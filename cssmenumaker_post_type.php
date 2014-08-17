@@ -51,7 +51,7 @@ function cssmenumaker_pro_admin_init()
 
   wp_enqueue_style('cssmenumaker-base-styles', plugins_url().'/cssmenumaker_pro/css/menu_styles.css');  
   wp_enqueue_style('cssmenumaker-spectrum', plugins_url().'/cssmenumaker_pro/scripts/spectrum/spectrum.css');    
-  wp_enqueue_style('cssmenumaker-builder-styles', plugins_url().'/cssmenumaker_pro/css/styles.css');   
+  wp_enqueue_style('cssmenumaker-pro-builder-styles', plugins_url().'/cssmenumaker_pro/css/styles.css');   
   wp_enqueue_style('cssmenumaker-magnific-css', plugins_url().'/cssmenumaker_pro/scripts/magnific/magnific-popup.css');     
   
   add_meta_box('cssmenumaker_menu_options', 'Menu Options','cssmenumaker_pro_admin_menu_options','cssmenupro', 'normal', 'high' );

@@ -45,8 +45,8 @@ function pro_ajax_get_menu_json() {
 // Base CSS Styles
 add_action('wp_enqueue_scripts', 'cssmenumaker_pro_base_styles');
 function cssmenumaker_pro_base_styles() {
-  wp_register_style( 'cssmenumaker-base-styles', plugins_url().'/cssmenumaker_pro/css/menu_styles.css', array(), '', 'all' );
-  wp_enqueue_style( 'cssmenumaker-base-styles');
+  wp_register_style( 'cssmenumaker-pro-base-styles', plugins_url().'/cssmenumaker_pro/css/menu_styles.css', array(), '', 'all' );
+  wp_enqueue_style( 'cssmenumaker-pro-base-styles');
 }
 
 
