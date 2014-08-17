@@ -3,7 +3,7 @@
  * Plugin Name: MenuMaker Pro
  * Plugin URI: http://cssmenumaker.com/
  * Description: Wordpress Plugin to build dynamic, responsive, multi level menu navigations.
- * Version: 1.1.3
+ * Version: 1.1.4
  * Author: cssmenumaker
  * Author URI: http://cssmenumaker.com/
  * License: GPL2
